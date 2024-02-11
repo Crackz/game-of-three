@@ -1,0 +1,14 @@
+version: "3"
+
+includes:
+  server:
+    taskfile: ./server/Taskfile.yml
+  client:
+    taskfile: ./client/Taskfile.yml
+
+tasks:
+  init:
+    cmds:
+      - task: client:init
+      - task: server:init
+    desc: Initialize the client and server by installing dependencies
