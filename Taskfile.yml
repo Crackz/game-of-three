@@ -3,8 +3,15 @@ version: "3"
 includes:
   server:
     taskfile: ./server/Taskfile.yml
+    dir: ./server
+    aliases:
+      - s
+
   client:
     taskfile: ./client/Taskfile.yml
+    dir: ./client
+    aliases:
+      - c
 
 tasks:
   init:

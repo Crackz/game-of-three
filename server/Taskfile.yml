@@ -4,4 +4,42 @@ tasks:
   init:
     cmds:
       - npm install
+      - sh ./scripts/hosts.sh add 127.0.0.1 gameofthree-postgres
     internal: true
+
+  log:
+    cmd: docker compose logs -f app
+
+  start:
+    cmds:
+      - docker compose up -d
+      - task: log
+
+  stop:
+    cmds:
+      - docker compose stop
+
+  restart:
+    cmds:
+      - docker compose restart
+      - task: log
+
+  down:
+    cmds:
+      - docker compose down
+
+  migration:create:
+    cmds:
+      - ./node_modules/.bin/typeorm-ts-node-commonjs migration:create ./src/migrations/{{.CLI_ARGS}}
+
+  migration:run:
+    env:
+      NODE_ENV: development
+    cmds:
+      - ./node_modules/.bin/typeorm-ts-node-commonjs migration:run  -d ./src/config/typeorm.ts
+
+  migration:revert:
+    env:
+      NODE_ENV: development
+    cmds:
+      - ./node_modules/.bin/typeorm-ts-node-commonjs migration:revert  -d ./src/config/typeorm.ts

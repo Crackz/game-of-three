@@ -1,0 +1,25 @@
+import { registerAs } from '@nestjs/config';
+import * as dotenv from 'dotenv';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { envFilePaths } from '.';
+import { validateEnvironmentVariables } from '../common/env/validation';
+import { DataSource } from 'typeorm';
+
+const loadedDotEnv = dotenv.config({
+  path: envFilePaths,
+});
+const loadedEnvironmentVars = validateEnvironmentVariables(loadedDotEnv.parsed);
+
+const config: PostgresConnectionOptions = {
+  type: 'postgres' as const,
+  host: `${loadedEnvironmentVars.DATABASE_HOST}`,
+  port: +`${loadedEnvironmentVars.DATABASE_PORT}`,
+  username: `${loadedEnvironmentVars.DATABASE_USERNAME}`,
+  password: `${loadedEnvironmentVars.DATABASE_PASSWORD}`,
+  database: `${loadedEnvironmentVars.DATABASE_NAME}`,
+  entities: ['dist/src/**/*.entity{.ts,.js}'],
+  migrations: ['dist/src/migrations/*{.ts,.js}'],
+};
+
+export const typeormConfig = registerAs('typeorm', () => config);
+export default new DataSource(config);
