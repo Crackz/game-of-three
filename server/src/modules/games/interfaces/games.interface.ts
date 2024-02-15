@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { WebSocketMessage } from 'src/common/interfaces/socket-message';
 
 export enum GameRole {
@@ -15,7 +16,21 @@ export interface GamePlayerDetails {
   role: GameRole;
 }
 
-export interface JoinGameWebSocketMessage extends WebSocketMessage {
+export class JoinGameWebSocketMessage extends WebSocketMessage {
+  @ApiProperty({
+    examples: [
+      {
+        game: {
+          id: 11,
+          isNew: true,
+          role: GameRole.PLAYER_ONE,
+        },
+      },
+      {
+        info: 'Game is full!',
+      },
+    ],
+  })
   data: {
     info?: string;
     game?: {
@@ -26,7 +41,10 @@ export interface JoinGameWebSocketMessage extends WebSocketMessage {
   };
 }
 
-export interface InfoJoinGameWebSocketMessage extends WebSocketMessage {
+export class InfoJoinGameWebSocketMessage extends WebSocketMessage {
+  @ApiProperty({
+    example: { info: 'Player x left the game' },
+  })
   data: {
     info: string;
   };

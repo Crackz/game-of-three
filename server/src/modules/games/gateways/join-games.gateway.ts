@@ -14,6 +14,12 @@ import {
   InfoJoinGameWebSocketMessage,
   JoinGameWebSocketMessage,
 } from '../interfaces/games.interface';
+import { AsyncApiPub } from 'nestjs-asyncapi';
+
+const EventPatternsWS = {
+  JOIN: 'join',
+  INFO_JOIN: 'info-join',
+} as const;
 
 @WebSocketGateway({ namespace: 'games' })
 export class JoinGamesGateway
@@ -30,14 +36,6 @@ export class JoinGamesGateway
 
   private getRoomId(gameId: number): string {
     return `games/${gameId}`;
-  }
-
-  private getJoinEventName() {
-    return 'join';
-  }
-
-  private getInfoJoinEventName() {
-    return 'info-join';
   }
 
   private getSocket(socketId: string): Socket {
@@ -71,7 +69,13 @@ export class JoinGamesGateway
     }
   }
 
-  @SubscribeMessage('join')
+  @SubscribeMessage(EventPatternsWS.JOIN)
+  @AsyncApiPub({
+    channel: EventPatternsWS.JOIN,
+    message: {
+      payload: JoinGameWebSocketMessage,
+    },
+  })
   async handleJoinEvent(@ConnectedSocket() socket: Socket): Promise<void> {
     const { game, isNewGame } = await this.gamesService.getActiveGame();
     await this.gamesService.tryToJoinGame(socket.id, {
@@ -91,7 +95,7 @@ export class JoinGamesGateway
         info: reason,
       },
     };
-    socket.emit(this.getJoinEventName(), infoMessage);
+    socket.emit(EventPatternsWS.JOIN, infoMessage);
   }
 
   async sendSuccessfulJoinEvent(
@@ -118,16 +122,20 @@ export class JoinGamesGateway
         game,
       },
     };
-    socket.emit(this.getJoinEventName(), joinedMessage);
+    socket.emit(EventPatternsWS.JOIN, joinedMessage);
   }
 
+  @AsyncApiPub({
+    channel: EventPatternsWS.INFO_JOIN,
+    message: { payload: InfoJoinGameWebSocketMessage },
+  })
   sendInfoJoinEvent(
     socket: Socket,
     gameId: number,
     infoMessage: InfoJoinGameWebSocketMessage,
   ): void {
     const roomId = this.getRoomId(gameId);
-    socket.to(roomId).emit(this.getInfoJoinEventName(), infoMessage);
+    socket.to(roomId).emit(EventPatternsWS.INFO_JOIN, infoMessage);
   }
 
   handleConnection(socket: Socket) {
