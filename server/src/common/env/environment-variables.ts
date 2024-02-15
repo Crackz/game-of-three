@@ -8,12 +8,6 @@ export class EnvironmentVariables {
   @IsEnum(NodeEnvironment)
   NODE_ENV: NodeEnvironment;
 
-  // Server
-
-  @IsDefined()
-  @IsNumber()
-  SERVER_PORT: number;
-
   // Database
 
   @IsDefined()
@@ -28,9 +22,41 @@ export class EnvironmentVariables {
   @IsNumber()
   DATABASE_PORT: number;
 
+  @IsDefined()
   @IsString()
   DATABASE_USERNAME: string;
 
+  @IsDefined()
   @IsString()
   DATABASE_PASSWORD: string;
+
+  @IsDefined()
+  @IsString()
+  REDIS_HOST: string;
+
+  @IsDefined()
+  @IsNumber()
+  REDIS_PORT: number;
+
+  // Server
+
+  @IsDefined()
+  @IsNumber()
+  SERVER_PORT: number;
+
+  @IsDefined()
+  @IsNumber()
+  SERVER_SOCKET_PING_TIMEOUT_IN_MS: number;
+
+  @IsDefined()
+  @IsNumber()
+  SERVER_SOCKET_PING_INTERVAL_IN_MS: number;
+
+  @IsDefined()
+  @IsNumber()
+  SERVER_SOCKET_TOLERANCE_IN_MS: number;
+
+  @IsDefined()
+  @IsNumber()
+  GAME_MOVE_WAIT_TIME_IN_MS: number;
 }

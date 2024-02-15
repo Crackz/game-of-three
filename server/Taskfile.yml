@@ -5,6 +5,7 @@ tasks:
     cmds:
       - npm install
       - sh ./scripts/hosts.sh add 127.0.0.1 gameofthree-postgres
+      - sh ./scripts/hosts.sh add 127.0.0.1 gameofthree-redis
     internal: true
 
   log:
@@ -12,7 +13,7 @@ tasks:
 
   start:
     cmds:
-      - docker compose up -d
+      - docker compose up -d --build --remove-orphans
       - task: log
 
   stop:
@@ -43,3 +44,8 @@ tasks:
       NODE_ENV: development
     cmds:
       - ./node_modules/.bin/typeorm-ts-node-commonjs migration:revert  -d ./src/config/typeorm.ts
+
+  resource:gen:
+    interactive: true
+    cmds:
+      - ./node_modules/.bin/nest generate resource

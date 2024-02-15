@@ -1,6 +1,8 @@
 #### Assumptions
-- It's mentioned on the assignment that "Both players should be able to play automatically without user input" I assumed that the user should join a game automatically once he enters the game page I also assumed the user has the control over the other actions (otherwise it will be boring game).
-- "One of the players should optionally be adjustable by a user" I assumed that the user has the ability to choose between two players either he's the player 1 or player 2
+
+"Both players should be able to play automatically without user input. One of the players should optionally be adjustable by a user."
+
+The game can be played automatically with a user. (A real player playing with the machine) and optionally 2 real players playing together.
 
 
 
