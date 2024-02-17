@@ -7,21 +7,17 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
+import { AsyncApiPub } from 'nestjs-asyncapi';
 import { Server, Socket } from 'socket.io';
+import { WsEventPath } from 'src/common/constants';
 import { GamesService } from '../games.service';
 import {
   GameRole,
   InfoJoinGameWebSocketMessage,
   JoinGameWebSocketMessage,
 } from '../interfaces/games.interface';
-import { AsyncApiPub } from 'nestjs-asyncapi';
 
-const EventPatternsWS = {
-  JOIN: 'join',
-  INFO_JOIN: 'info-join',
-} as const;
-
-@WebSocketGateway({ namespace: 'games' })
+@WebSocketGateway({ namespace: 'games', cors: true })
 export class JoinGamesGateway
   implements
     OnGatewayConnection<Socket>,
@@ -46,42 +42,44 @@ export class JoinGamesGateway
   private getInfoJoinMessage(
     socketId: string,
     role: GameRole,
-    type: 'JOIN' | 'LEAVE',
+    msgType: 'JOIN' | 'LEAVE',
   ): InfoJoinGameWebSocketMessage {
-    const roleName = this.gamesService.mapRoleToRoleName(role);
-    switch (type) {
+    const playerNumber = this.gamesService.mapRoleToNumber(role);
+    switch (msgType) {
       case 'JOIN':
         return {
           success: true,
           data: {
-            info: `Player ${socketId} with role ${roleName} joined the game`,
+            info: `Player ${playerNumber} with id ${socketId} joined the game`,
           },
         };
       case 'LEAVE':
         return {
           success: true,
           data: {
-            info: `Player ${socketId} with role ${roleName} left the game`,
+            info: `Player ${playerNumber} with id ${socketId} left the game`,
           },
         };
       default:
-        throw new Error('Unhandled info join type: ' + type);
+        throw new Error('Unhandled info join type: ' + msgType);
     }
   }
 
-  @SubscribeMessage(EventPatternsWS.JOIN)
+  @SubscribeMessage(WsEventPath.JOIN)
   @AsyncApiPub({
-    channel: EventPatternsWS.JOIN,
+    channel: WsEventPath.JOIN,
     message: {
       payload: JoinGameWebSocketMessage,
     },
   })
-  async handleJoinEvent(@ConnectedSocket() socket: Socket): Promise<void> {
+  async handleJoinEvent(@ConnectedSocket() socket: Socket): Promise<boolean> {
     const { game, isNewGame } = await this.gamesService.getActiveGame();
     await this.gamesService.tryToJoinGame(socket.id, {
       id: game.id,
       isNew: isNewGame,
     });
+
+    return true;
   }
 
   async sendFailedJoinEvent(socketId: string, reason: string) {
@@ -95,7 +93,7 @@ export class JoinGamesGateway
         info: reason,
       },
     };
-    socket.emit(EventPatternsWS.JOIN, infoMessage);
+    socket.emit(WsEventPath.JOIN, infoMessage);
   }
 
   async sendSuccessfulJoinEvent(
@@ -113,7 +111,7 @@ export class JoinGamesGateway
 
     if (!game.isNew) {
       const infoMessage = this.getInfoJoinMessage(socket.id, game.role, 'JOIN');
-      this.sendInfoJoinEvent(socket, game.id, infoMessage);
+      this.sendInfoJoinEvent(game.id, infoMessage);
     }
 
     const joinedMessage: JoinGameWebSocketMessage = {
@@ -122,20 +120,19 @@ export class JoinGamesGateway
         game,
       },
     };
-    socket.emit(EventPatternsWS.JOIN, joinedMessage);
+    socket.emit(WsEventPath.JOIN, joinedMessage);
   }
 
   @AsyncApiPub({
-    channel: EventPatternsWS.INFO_JOIN,
+    channel: WsEventPath.INFO_JOIN,
     message: { payload: InfoJoinGameWebSocketMessage },
   })
   sendInfoJoinEvent(
-    socket: Socket,
     gameId: number,
     infoMessage: InfoJoinGameWebSocketMessage,
   ): void {
     const roomId = this.getRoomId(gameId);
-    socket.to(roomId).emit(EventPatternsWS.INFO_JOIN, infoMessage);
+    this.server.to(roomId).emit(WsEventPath.INFO_JOIN, infoMessage);
   }
 
   handleConnection(socket: Socket) {
@@ -150,7 +147,7 @@ export class JoinGamesGateway
         leftGame.role,
         'LEAVE',
       );
-      this.sendInfoJoinEvent(socket, leftGame.id, infoMessage);
+      this.sendInfoJoinEvent(leftGame.id, infoMessage);
     }
 
     this.logger.verbose(`Socket Disconnected: ${socket.id}`);

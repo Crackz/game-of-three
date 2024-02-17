@@ -7,9 +7,14 @@ export const JOIN_GAMES_QUEUE_NAME = 'join-games';
 
 export const REDIS_CLIENT_TOKEN = 'RedisClientToken';
 
-export enum NodeEnvironment {
-  DEVELOPMENT = 'development',
-  STAGING = 'staging',
-  PRODUCTION = 'production',
-  TESTING = 'testing',
-}
+export const NodeEnvironment = {
+  DEVELOPMENT: 'development',
+  STAGING: 'staging',
+  PRODUCTION: 'production',
+  TESTING: 'testing',
+} as const;
+
+export const WsEventPath = {
+  JOIN: 'join',
+  INFO_JOIN: 'info-join',
+} as const;

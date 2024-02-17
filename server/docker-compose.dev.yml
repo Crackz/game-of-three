@@ -1,21 +1,23 @@
 version: '3.8'
 services:
   app:
-      container_name: gameofthree-app
-      init: true
-      build:
-          context: ./
-          target: development
-      volumes:
-          - ./:/app
-          - /app/node_modules
-      ports:
-          - 3000:3000
-      depends_on:
-        redis:
-          condition: service_started
-        postgres:
-          condition: service_healthy
+    container_name: gameofthree-app
+    init: true
+    build:
+        context: ./
+        target: development
+    volumes:
+        - ./:/app
+        - /app/node_modules
+    ports:
+        - 3000:3000
+    depends_on:
+      redis:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+    networks:
+      gameofthree-network:
 
   postgres:
     image: postgres:16.1
@@ -33,6 +35,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+        gameofthree-network:
 
   redis:
       image: redis:7.2
@@ -42,7 +46,12 @@ services:
       ports:
           - 6379:6379
       restart: unless-stopped
+      networks:
+        gameofthree-network:
 
 volumes:
   postgres:
   redis:
+  
+networks:
+   gameofthree-network:

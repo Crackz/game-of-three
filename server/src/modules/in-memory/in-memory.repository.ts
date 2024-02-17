@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { ChainableCommander, Redis } from 'ioredis';
+import { Redis } from 'ioredis';
 import { REDIS_CLIENT_TOKEN } from 'src/common/constants';
 
 @Injectable()

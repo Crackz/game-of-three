@@ -6,7 +6,7 @@ export class EnvironmentVariables {
 
   @IsDefined()
   @IsEnum(NodeEnvironment)
-  NODE_ENV: NodeEnvironment;
+  NODE_ENV: typeof NodeEnvironment;
 
   // Database
 

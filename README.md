@@ -1,11 +1,18 @@
+#### Used Technologies
+<p>
+  <img src="https://nestjs.com/img/logo-small.svg" width="50" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" width="50" />
+  <img src="https://cdn.worldvectorlogo.com/logos/redis.svg" width="50" />
+</p>
+
+
 #### Assumptions
 
-"Both players should be able to play automatically without user input. One of the players should optionally be adjustable by a user."
+- (Nemanja) The game can be played automatically with a user. (A real player playing with the machine) and optionally 2 real players playing together.
 
-The game can be played automatically with a user. (A real player playing with the machine) and optionally 2 real players playing together.
+- (ME) There is no need for unit tests. e2e testing is sufficient
 
-
-
+--- 
 
 #### Setup
 
@@ -14,11 +21,31 @@ The game can be played automatically with a user. (A real player playing with th
     -  `npm install -g @go-task/cli`
 - Run `task init`
 
+--- 
+
+#### Start the development
+##### Run the server
+- `task server:start`
+
+--- 
+
+#### Tests
+##### Run the test containers
+- `task server:test:init`
+##### Run the e2e tests
+- `task server:test:start`
+
+--- 
+
 
 #### Migrations
 > Migration is run automatically on the development environment
 
 ##### Create a new migration
 - `task server:migration:create -- {migration-name}`
+
+##### Run the migrations
+- `task server:migration:run`
+
 ##### Revert the latest migration
 - `task server:migration:revert`

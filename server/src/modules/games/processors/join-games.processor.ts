@@ -1,10 +1,10 @@
-import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { JOIN_GAMES_QUEUE_NAME } from 'src/common/constants';
 import { GamesService } from '../games.service';
 import { JoinGamesGateway } from '../gateways/join-games.gateway';
 import { JoinGameJobMessage } from '../interfaces/join-games.interface';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 
 @Processor(JOIN_GAMES_QUEUE_NAME)
 export class JoinGamesProcessor extends WorkerHost {

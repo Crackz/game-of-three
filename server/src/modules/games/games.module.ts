@@ -1,18 +1,18 @@
-import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JOIN_GAMES_QUEUE_NAME } from 'src/common/constants';
+import { InMemoryModule } from '../in-memory/in-memory.module';
 import { GameEntity } from './game.entity';
-import { JoinGamesGateway } from './gateways/join-games.gateway';
 import { GamesRepository } from './games.repository';
 import { GamesService } from './games.service';
+import { JoinGamesGateway } from './gateways/join-games.gateway';
 import { JoinGamesProcessor } from './processors/join-games.processor';
-import { InMemoryModule } from '../in-memory/in-memory.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([GameEntity]),
-    BullModule.registerQueue({
+    BullModule.registerQueueAsync({
       name: JOIN_GAMES_QUEUE_NAME,
     }),
     InMemoryModule,

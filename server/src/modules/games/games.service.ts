@@ -1,6 +1,4 @@
-import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import { Queue } from 'bullmq';
 import { JOIN_GAMES_QUEUE_NAME } from 'src/common/constants';
 import { InMemoryRepository } from '../in-memory/in-memory.repository';
 import { GameEntity } from './game.entity';
@@ -11,7 +9,8 @@ import {
   GameStatus,
 } from './interfaces/games.interface';
 import { JoinGameJobMessage } from './interfaces/join-games.interface';
-
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 @Injectable()
 export class GamesService implements OnApplicationBootstrap {
   private readonly gamePrefix = 'game';
@@ -24,11 +23,17 @@ export class GamesService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    // Clean up any stale games, game players states
-    // This could happen when the server crashes
-    // Deleting by a pattern isn't the best solution to this problem as It could cause
-    // performance issues (if we going to have hundreds of thousands of keys)
-    // It's done this way to keep things simple
+    await this.removeAllGamesStates();
+  }
+
+  /**
+   * Clean up any stale games, game players states
+   * This could happen when the server crashes
+   * Deleting by a pattern isn't the best solution to this problem as It could cause
+   * performance issues (if we going to have hundreds of thousands of keys)
+   * It's done this way to keep things simple
+   */
+  async removeAllGamesStates() {
     await Promise.all([
       this.inMemoryRepo.deleteByPattern(this.gamePrefix),
       this.inMemoryRepo.deleteByPattern(this.gamePlayerPrefix),
@@ -144,12 +149,12 @@ export class GamesService implements OnApplicationBootstrap {
     return { id: playerDetails.gameId, role: playerDetails.role };
   }
 
-  mapRoleToRoleName(role: GameRole): string {
+  mapRoleToNumber(role: GameRole): number {
     switch (role) {
       case GameRole.PLAYER_ONE:
-        return 'player 1';
+        return 1;
       case GameRole.PLAYER_TWO:
-        return 'player 2';
+        return 2;
       default:
         throw new Error(`Unhandled role ${role} to role name `);
     }

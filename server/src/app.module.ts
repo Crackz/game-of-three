@@ -10,10 +10,10 @@ import { typeormConfig } from './config/typeorm';
 import { GamesModule } from './modules/games/games.module';
 import { InMemoryModule } from './modules/in-memory/in-memory.module';
 import { BullModule } from '@nestjs/bullmq';
+import * as Bull from 'bullmq';
 
 @Module({
   imports: [
-    GamesModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: envFilePaths,
@@ -31,7 +31,7 @@ import { BullModule } from '@nestjs/bullmq';
       inject: [ConfigService],
       useFactory: async (
         configService: ConfigService<EnvironmentVariables>,
-      ) => {
+      ): Promise<Bull.QueueOptions> => {
         return {
           connection: {
             host: configService.get('REDIS_HOST'),
@@ -40,6 +40,7 @@ import { BullModule } from '@nestjs/bullmq';
         };
       },
     }),
+    GamesModule,
   ],
   controllers: [],
   providers: [],
@@ -52,7 +53,10 @@ export class AppModule implements OnModuleInit {
     private configService: ConfigService<EnvironmentVariables>,
   ) {}
   async onModuleInit() {
-    if (this.configService.get('NODE_ENV') === NodeEnvironment.DEVELOPMENT) {
+    if (
+      this.configService.get('NODE_ENV') === NodeEnvironment.DEVELOPMENT ||
+      this.configService.get('NODE_ENV') === NodeEnvironment.TESTING
+    ) {
       await this.dataSource.runMigrations();
       this.logger.log('Migrations Are Executed');
     }
