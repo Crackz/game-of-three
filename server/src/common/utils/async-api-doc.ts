@@ -17,7 +17,7 @@ export class AsyncApiDoc {
       })
       .build();
 
-    const asyncApiDocument = await AsyncApiModule.createDocument(
+    const asyncApiDocument = AsyncApiModule.createDocument(
       app,
       asyncApiOptions,
     );

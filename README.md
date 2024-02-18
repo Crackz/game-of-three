@@ -29,6 +29,13 @@
 
 --- 
 
+#### Docs
+> Make sure to run the server first
+- [View Http Docs](http://localhost:3000/http-docs)
+- [View Websocket Docs](http://localhost:3000/websocket-docs)
+
+---
+
 #### Tests
 ##### Run the test containers
 - `task server:test:init`
@@ -39,12 +46,12 @@
 
 
 #### Migrations
-> Migration is run automatically on the development environment
+> Migrations are run automatically on the development, testing environments
 
 ##### Create a new migration
 - `task server:migration:create -- {migration-name}`
 
-##### Run the migrations
+##### Run all migrations
 - `task server:migration:run`
 
 ##### Revert the latest migration
