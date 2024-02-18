@@ -131,6 +131,12 @@ export class GamesGateway
     this.server.to(roomId).emit(WsEventPath.EVENTS, infoMessage);
   }
 
+  @AsyncApiPub({
+    channel: WsEventPath.GAME_STATUS,
+    message: {
+      payload: GameStatusWebSocketMessage,
+    },
+  })
   async sendFinishedEvent(gameId: number) {
     const game = await this.gamesService.getGame(gameId);
 

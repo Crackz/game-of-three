@@ -10,7 +10,22 @@ export enum GameMoveAction {
 
 export class NewMoveWebSocketMessage extends WebSocketMessage {
   @ApiProperty({
-    example: {},
+    examples: [
+      {
+        data: {
+          move: {
+            action: GameMoveAction.ADDED_ONE,
+            number: 100,
+            role: GameRole.PLAYER_ONE,
+          },
+        },
+      },
+      {
+        data: {
+          info: 'Wait for the other player to make his move',
+        },
+      },
+    ],
   })
   data: {
     info?: string;

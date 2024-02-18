@@ -1,8 +1,9 @@
 import { Controller, Get, Injectable, Param } from '@nestjs/common';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { GameMoveDto } from '../dtos/game-move.dto';
 import { GamesMovesService } from '../games-moves.service';
-import { ApiOkResponse } from '@nestjs/swagger';
 
+@ApiTags('Games Moves')
 @Injectable()
 @Controller('/games/:gameId/moves')
 export class GamesMovesController {

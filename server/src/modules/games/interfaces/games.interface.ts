@@ -52,7 +52,11 @@ export class GameEventWebSocketMessage {
 
 export class GameStatusWebSocketMessage {
   @ApiProperty({
-    example: {},
+    example: {
+      data: {
+        info: 'Winner is player 1',
+      },
+    },
   })
   data: {
     info: string;
