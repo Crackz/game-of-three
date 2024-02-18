@@ -14,7 +14,7 @@ import { GamesService } from '../games.service';
 import {
   GameRole,
   GameStatusWebSocketMessage,
-  InfoJoinGameWebSocketMessage,
+  GameEventWebSocketMessage,
   JoinGameWebSocketMessage,
 } from '../interfaces/games.interface';
 
@@ -34,13 +34,13 @@ export class GamesGateway
     return `games/${gameId}`;
   }
 
-  private getInfoJoinMessage(
+  private getGameEventMessage(
     socketId: string,
     role: GameRole,
-    msgType: 'JOIN' | 'LEAVE',
-  ): InfoJoinGameWebSocketMessage {
+    eventType: 'JOIN' | 'LEAVE',
+  ): GameEventWebSocketMessage {
     const playerNumber = this.gamesService.mapRoleToNumber(role);
-    switch (msgType) {
+    switch (eventType) {
       case 'JOIN':
         return {
           data: {
@@ -54,7 +54,7 @@ export class GamesGateway
           },
         };
       default:
-        throw new Error('Unhandled info join type: ' + msgType);
+        throw new Error('Unhandled game event type: ' + eventType);
     }
   }
 
@@ -102,8 +102,12 @@ export class GamesGateway
     socket.join(roomId);
 
     if (!game.isNew) {
-      const infoMessage = this.getInfoJoinMessage(socket.id, game.role, 'JOIN');
-      this.sendInfoJoinEvent(game.id, infoMessage);
+      const infoMessage = this.getGameEventMessage(
+        socket.id,
+        game.role,
+        'JOIN',
+      );
+      this.sendGameEventEvent(game.id, infoMessage);
     }
 
     const joinedMessage: JoinGameWebSocketMessage = {
@@ -116,15 +120,15 @@ export class GamesGateway
   }
 
   @AsyncApiPub({
-    channel: WsEventPath.INFO_JOIN,
-    message: { payload: InfoJoinGameWebSocketMessage },
+    channel: WsEventPath.EVENTS,
+    message: { payload: GameEventWebSocketMessage },
   })
-  sendInfoJoinEvent(
+  sendGameEventEvent(
     gameId: number,
-    infoMessage: InfoJoinGameWebSocketMessage,
+    infoMessage: GameEventWebSocketMessage,
   ): void {
     const roomId = this.getRoomId(gameId);
-    this.server.to(roomId).emit(WsEventPath.INFO_JOIN, infoMessage);
+    this.server.to(roomId).emit(WsEventPath.EVENTS, infoMessage);
   }
 
   async sendFinishedEvent(gameId: number) {
@@ -147,12 +151,12 @@ export class GamesGateway
   async handleDisconnect(socket: Socket) {
     const leftGame = await this.gamesService.removeUserFromGame(socket.id);
     if (leftGame) {
-      const infoMessage = this.getInfoJoinMessage(
+      const infoMessage = this.getGameEventMessage(
         socket.id,
         leftGame.role,
         'LEAVE',
       );
-      this.sendInfoJoinEvent(leftGame.id, infoMessage);
+      this.sendGameEventEvent(leftGame.id, infoMessage);
     }
 
     this.logger.verbose(`Socket Disconnected: ${socket.id}`);

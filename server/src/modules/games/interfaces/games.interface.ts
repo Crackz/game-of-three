@@ -41,7 +41,7 @@ export class JoinGameWebSocketMessage extends WebSocketMessage {
   };
 }
 
-export class InfoJoinGameWebSocketMessage {
+export class GameEventWebSocketMessage {
   @ApiProperty({
     example: { info: 'Player x with id y left the game' },
   })

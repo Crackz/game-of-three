@@ -34,7 +34,7 @@ export abstract class BaseRepo<T extends BaseEntity> {
     return await this._repo.update(id, updatedData);
   }
 
-  async create(data: DeepWritable<RequiredOnly<T>>): Promise<T> {
-    return await this._repo.save(data as unknown as DeepPartial<T>);
+  async create(data: DeepWritable<T>): Promise<T> {
+    return await this._repo.save(data as DeepPartial<T>);
   }
 }

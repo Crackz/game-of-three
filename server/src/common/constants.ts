@@ -18,7 +18,7 @@ export const NodeEnvironment = {
 
 export const WsEventPath = {
   JOIN: 'join',
-  INFO_JOIN: 'info-join',
+  EVENTS: 'events',
   NEW_MOVE: 'new-move',
   GAME_STATUS: 'game-status',
 } as const;

@@ -8,8 +8,8 @@ import { GamesService } from 'src/modules/games/games.service';
 import { GameStatus } from 'src/modules/games/interfaces/games.interface';
 import { DataSource } from 'typeorm';
 import { AppModule } from '../src/app.module';
-import { TestUtils } from './shared/test-utils';
 import { TestGameSocket } from './shared/test-game-socket';
+import { TestUtils } from './shared/test-utils';
 
 describe('JoinGameGateway (e2e)', () => {
   let app: INestApplication;
@@ -72,6 +72,7 @@ describe('JoinGameGateway (e2e)', () => {
   it('should get a successful join event when active game exists', async () => {
     const newGame = await gamesRepo.create({
       status: GameStatus.ACTIVE,
+      info: undefined,
     });
 
     const gameSocket = await new TestGameSocket(serverPort).connect();
@@ -166,7 +167,7 @@ describe('JoinGameGateway (e2e)', () => {
     const gameSocket = await new TestGameSocket(serverPort).connect();
     await gameSocket.joinGame();
 
-    const infoMsgPromise = gameSocket.listenOn('info-join');
+    const infoMsgPromise = gameSocket.listenOn('events');
 
     const anotherGameSocket = await new TestGameSocket(serverPort).connect();
     await anotherGameSocket.joinGame();
@@ -191,7 +192,7 @@ describe('JoinGameGateway (e2e)', () => {
     const anotherGameSocket = await new TestGameSocket(serverPort).connect();
     await anotherGameSocket.joinGame();
 
-    const infoMsgPromise = gameSocket.listenOn('info-join');
+    const infoMsgPromise = gameSocket.listenOn('events');
 
     await anotherGameSocket.disconnect();
     const infoMsg = await infoMsgPromise;
