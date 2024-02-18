@@ -11,6 +11,7 @@ import {
   LastGameMoveDetails,
 } from './interfaces/games-moves.interface';
 import { NewMoveJobMessage } from './interfaces/new-moves.interface';
+import { GameMoveDto } from './dtos/game-move.dto';
 
 @Injectable()
 export class GamesMovesService implements OnApplicationBootstrap {
@@ -122,5 +123,21 @@ export class GamesMovesService implements OnApplicationBootstrap {
   async removeGameMoves(gameId: number) {
     const lastMoveDetailsKey = this.getLastMoveDetailsKey(gameId);
     await this.inMemoryRepo.delete(lastMoveDetailsKey);
+  }
+
+  async viewMany(gameId: number): Promise<GameMoveDto[]> {
+    const gameMoves = await this.gamesMovesRepo.find(
+      { gameId },
+      { order: { createdAt: 'ASC' } },
+    );
+    return gameMoves.map(
+      (gameMove): GameMoveDto => ({
+        id: gameMove.id,
+        action: gameMove.action,
+        number: gameMove.number,
+        role: gameMove.role,
+        createdAt: gameMove.createdAt,
+      }),
+    );
   }
 }

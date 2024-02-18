@@ -9,8 +9,10 @@ import { GamesMovesGateway } from './gateways/games-moves.gateway';
 import { NewMovesProcessor } from './processors/new-moves.processor';
 import { InMemoryModule } from '../in-memory/in-memory.module';
 import { GamesModule } from '../games/games.module';
+import { GamesMovesController } from './controllers/games-moves.controller';
 
 @Module({
+  controllers: [GamesMovesController],
   imports: [
     TypeOrmModule.forFeature([GameMoveEntity]),
     BullModule.registerQueueAsync({
