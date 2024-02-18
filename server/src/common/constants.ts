@@ -17,6 +17,7 @@ export const NodeEnvironment = {
 } as const;
 
 export const WsEventPath = {
+  ERROR: 'error',
   JOIN: 'join',
   EVENTS: 'events',
   NEW_MOVE: 'new-move',

@@ -8,7 +8,6 @@ export class TestUtils {
       const tableNames = entities
         .map((entity) => `"${entity.tableName}"`)
         .join(', ');
-
       await dataSource.query(
         `TRUNCATE TABLE ${tableNames} RESTART IDENTITY CASCADE;`,
       );

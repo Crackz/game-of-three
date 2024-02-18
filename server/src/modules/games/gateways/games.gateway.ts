@@ -134,12 +134,11 @@ export class GamesGateway
   async sendFinishedEvent(gameId: number) {
     const game = await this.gamesService.getGame(gameId);
 
-    const roomId = this.getRoomId(gameId);
-
     const gameStatusMsg: GameStatusWebSocketMessage = {
       data: { info: game.info },
     };
 
+    const roomId = this.getRoomId(gameId);
     this.server.to(roomId).emit(WsEventPath.GAME_STATUS, gameStatusMsg);
     await this.server.in(roomId).socketsLeave(roomId);
   }

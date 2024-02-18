@@ -8,10 +8,10 @@ import { GamesService } from 'src/modules/games/games.service';
 import { GameStatus } from 'src/modules/games/interfaces/games.interface';
 import { DataSource } from 'typeorm';
 import { AppModule } from '../src/app.module';
-import { TestGameSocket } from './shared/test-game-socket';
+import { TestGameSocket, TestGameSocketEvent } from './shared/test-game-socket';
 import { TestUtils } from './shared/test-utils';
 
-describe('JoinGameGateway (e2e)', () => {
+describe('GamesGateway (e2e)', () => {
   let app: INestApplication;
   let serverPort: number;
   let dataSource: DataSource;
@@ -167,13 +167,13 @@ describe('JoinGameGateway (e2e)', () => {
     const gameSocket = await new TestGameSocket(serverPort).connect();
     await gameSocket.joinGame();
 
-    const infoMsgPromise = gameSocket.listenOn('events');
+    const eventMsgPromise = gameSocket.listenOn(TestGameSocketEvent.EVENTS);
 
     const anotherGameSocket = await new TestGameSocket(serverPort).connect();
     await anotherGameSocket.joinGame();
 
-    const infoMsg = await infoMsgPromise;
-    expect(infoMsg).toMatchObject({
+    const eventMsg = await eventMsgPromise;
+    expect(eventMsg).toMatchObject({
       data: {
         info: expect.any(String),
       },
@@ -192,12 +192,12 @@ describe('JoinGameGateway (e2e)', () => {
     const anotherGameSocket = await new TestGameSocket(serverPort).connect();
     await anotherGameSocket.joinGame();
 
-    const infoMsgPromise = gameSocket.listenOn('events');
+    const eventMsgPromise = gameSocket.listenOn(TestGameSocketEvent.EVENTS);
 
     await anotherGameSocket.disconnect();
-    const infoMsg = await infoMsgPromise;
+    const eventMsg = await eventMsgPromise;
 
-    expect(infoMsg).toMatchObject({
+    expect(eventMsg).toMatchObject({
       data: {
         info: expect.any(String),
       },

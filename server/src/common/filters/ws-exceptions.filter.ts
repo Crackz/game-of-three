@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { WsEventPath } from '../constants';
 
 @Catch()
 export class WsExceptionsFilter implements ExceptionFilter {
@@ -21,6 +22,6 @@ export class WsExceptionsFilter implements ExceptionFilter {
       err = exception;
     }
 
-    socket.emit('error', err);
+    socket.emit(WsEventPath.ERROR, err);
   }
 }

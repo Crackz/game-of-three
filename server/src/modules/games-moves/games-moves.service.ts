@@ -112,7 +112,7 @@ export class GamesMovesService implements OnApplicationBootstrap {
       );
     }
 
-    return newNumber / 3;
+    return newNumber / DIVIDE_BY;
   }
 
   isWinMove(move: GameMoveEntity) {
