@@ -18,8 +18,8 @@ const config: TypeOrmModuleOptions = {
   username: `${loadedEnvironmentVars.DATABASE_USERNAME}`,
   password: `${loadedEnvironmentVars.DATABASE_PASSWORD}`,
   database: `${loadedEnvironmentVars.DATABASE_NAME}`,
+  entities: ['dist/src/**/*.entity{.ts,.js}'],
   migrations: ['dist/src/migrations/*{.ts,.js}'],
-  autoLoadEntities: true,
 };
 
 export const typeormConfig = registerAs('typeorm', () => config);

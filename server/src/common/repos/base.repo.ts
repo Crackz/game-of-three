@@ -3,9 +3,12 @@ import {
   FindManyOptions,
   FindOneOptions,
   Repository,
+  UpdateResult,
 } from 'typeorm';
 import { BaseEntity } from '../entities/base.entity';
 import { DeepWritable } from '../types/writable';
+import { RequiredOnly } from '../types/required-only';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export abstract class BaseRepo<T extends BaseEntity> {
   constructor(readonly _repo: Repository<T>) {}
@@ -24,7 +27,14 @@ export abstract class BaseRepo<T extends BaseEntity> {
     return await this._repo.findOne({ where: query, ...opts });
   }
 
-  async create(data: DeepPartial<DeepWritable<T>>) {
-    return await this._repo.save(data as DeepPartial<T>);
+  async findByIdAndUpdate(
+    id: string | number,
+    updatedData: QueryDeepPartialEntity<T>,
+  ): Promise<UpdateResult> {
+    return await this._repo.update(id, updatedData);
+  }
+
+  async create(data: DeepWritable<RequiredOnly<T>>): Promise<T> {
+    return await this._repo.save(data as unknown as DeepPartial<T>);
   }
 }

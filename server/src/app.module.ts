@@ -11,6 +11,7 @@ import { GamesModule } from './modules/games/games.module';
 import { InMemoryModule } from './modules/in-memory/in-memory.module';
 import { BullModule } from '@nestjs/bullmq';
 import * as Bull from 'bullmq';
+import { GamesMovesModule } from './modules/games-moves/games-moves.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import * as Bull from 'bullmq';
       },
     }),
     GamesModule,
+    GamesMovesModule,
   ],
   controllers: [],
   providers: [],

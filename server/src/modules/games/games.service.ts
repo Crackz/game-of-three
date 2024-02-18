@@ -66,8 +66,15 @@ export class GamesService implements OnApplicationBootstrap {
       }
     }
 
-    const newGame = await this.gameRepo.create({ status: GameStatus.ACTIVE });
+    const newGame = await this.gameRepo.create({
+      status: GameStatus.ACTIVE,
+      info: undefined,
+    });
     return { game: newGame, isNewGame: true };
+  }
+
+  async getGame(gameId: number): Promise<GameEntity> {
+    return await this.gameRepo.findOne({ id: gameId });
   }
 
   async tryToJoinGame(
@@ -117,6 +124,16 @@ export class GamesService implements OnApplicationBootstrap {
     return roles;
   }
 
+  async getPlayerDetails(userId: string): Promise<GamePlayerDetails | null> {
+    const playerKey = this.getPlayerKey(userId);
+    const playerDetailsAsStr = await this.inMemoryRepo.get(playerKey);
+    if (!playerDetailsAsStr) {
+      return null;
+    }
+
+    return JSON.parse(playerDetailsAsStr);
+  }
+
   async setUserInGame(userId: string, gameId: number, role: GameRole) {
     const playerRoleKey = this.getPlayerRoleKey(gameId, role);
     await this.inMemoryRepo.set(playerRoleKey, userId);
@@ -131,12 +148,10 @@ export class GamesService implements OnApplicationBootstrap {
     role: GameRole;
   } | null> {
     const playerKey = this.getPlayerKey(userId);
-    const playerDetailsAsStr = await this.inMemoryRepo.get(playerKey);
-    if (!playerDetailsAsStr) {
+    const playerDetails = await this.getPlayerDetails(userId);
+    if (!playerDetails) {
       return null;
     }
-
-    const playerDetails: GamePlayerDetails = JSON.parse(playerDetailsAsStr);
 
     const playerRoleKey = this.getPlayerRoleKey(
       playerDetails.gameId,
@@ -158,5 +173,32 @@ export class GamesService implements OnApplicationBootstrap {
       default:
         throw new Error(`Unhandled role ${role} to role name `);
     }
+  }
+
+  async markAsFinishedGame(
+    gameId: number,
+    winnerRole: GameRole,
+  ): Promise<void> {
+    const playerOneRoleKey = this.getPlayerRoleKey(gameId, GameRole.PLAYER_ONE);
+    const playerTwoRoleKey = this.getPlayerRoleKey(gameId, GameRole.PLAYER_TWO);
+
+    const firstUserId = await this.inMemoryRepo.get(playerOneRoleKey);
+    const secondUserId = await this.inMemoryRepo.get(playerTwoRoleKey);
+
+    const playerOneKey = await this.getPlayerKey(firstUserId);
+    const playerTwoKey = await this.getPlayerKey(secondUserId);
+
+    await Promise.all([
+      this.gameRepo.findByIdAndUpdate(gameId, {
+        status: GameStatus.FINISHED,
+        info: `Winner is player ${this.mapRoleToNumber(winnerRole)}`,
+      }),
+      this.inMemoryRepo.deleteMany([
+        playerOneKey,
+        playerTwoKey,
+        playerOneRoleKey,
+        playerTwoRoleKey,
+      ]),
+    ]);
   }
 }

@@ -5,7 +5,7 @@ import { InMemoryModule } from '../in-memory/in-memory.module';
 import { GameEntity } from './game.entity';
 import { GamesRepository } from './games.repository';
 import { GamesService } from './games.service';
-import { JoinGamesGateway } from './gateways/join-games.gateway';
+import { GamesGateway } from './gateways/games.gateway';
 import { JoinGamesProcessor } from './processors/join-games.processor';
 import { BullModule } from '@nestjs/bullmq';
 
@@ -17,11 +17,7 @@ import { BullModule } from '@nestjs/bullmq';
     }),
     InMemoryModule,
   ],
-  providers: [
-    JoinGamesGateway,
-    GamesRepository,
-    GamesService,
-    JoinGamesProcessor,
-  ],
+  providers: [GamesGateway, GamesRepository, GamesService, JoinGamesProcessor],
+  exports: [GamesService, GamesGateway],
 })
 export class GamesModule {}

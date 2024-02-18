@@ -1,42 +1,37 @@
-import { Logger, OnApplicationShutdown } from '@nestjs/common';
+import { OnApplicationShutdown } from '@nestjs/common';
 import {
   ConnectedSocket,
   OnGatewayConnection,
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer,
 } from '@nestjs/websockets';
 import { AsyncApiPub } from 'nestjs-asyncapi';
-import { Server, Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { WsEventPath } from 'src/common/constants';
+import { BaseGateway } from 'src/common/gateways/base.gateway';
 import { GamesService } from '../games.service';
 import {
   GameRole,
+  GameStatusWebSocketMessage,
   InfoJoinGameWebSocketMessage,
   JoinGameWebSocketMessage,
 } from '../interfaces/games.interface';
 
 @WebSocketGateway({ namespace: 'games', cors: true })
-export class JoinGamesGateway
+export class GamesGateway
+  extends BaseGateway
   implements
     OnGatewayConnection<Socket>,
     OnGatewayDisconnect<Socket>,
     OnApplicationShutdown
 {
-  @WebSocketServer()
-  private readonly server: Server;
-  private readonly logger = new Logger(JoinGamesGateway.name);
-
-  constructor(private readonly gamesService: GamesService) {}
-
-  private getRoomId(gameId: number): string {
-    return `games/${gameId}`;
+  constructor(private readonly gamesService: GamesService) {
+    super(GamesGateway.name);
   }
 
-  private getSocket(socketId: string): Socket {
-    // There is a type issue it could be from socket.io or nest socket io package
-    return (this.server.sockets as unknown as Map<string, any>).get(socketId);
+  getRoomId(gameId: number): string {
+    return `games/${gameId}`;
   }
 
   private getInfoJoinMessage(
@@ -48,14 +43,12 @@ export class JoinGamesGateway
     switch (msgType) {
       case 'JOIN':
         return {
-          success: true,
           data: {
             info: `Player ${playerNumber} with id ${socketId} joined the game`,
           },
         };
       case 'LEAVE':
         return {
-          success: true,
           data: {
             info: `Player ${playerNumber} with id ${socketId} left the game`,
           },
@@ -106,7 +99,6 @@ export class JoinGamesGateway
     }
 
     const roomId = this.getRoomId(game.id);
-    socket.rooms.add(roomId);
     socket.join(roomId);
 
     if (!game.isNew) {
@@ -133,6 +125,19 @@ export class JoinGamesGateway
   ): void {
     const roomId = this.getRoomId(gameId);
     this.server.to(roomId).emit(WsEventPath.INFO_JOIN, infoMessage);
+  }
+
+  async sendFinishedEvent(gameId: number) {
+    const game = await this.gamesService.getGame(gameId);
+
+    const roomId = this.getRoomId(gameId);
+
+    const gameStatusMsg: GameStatusWebSocketMessage = {
+      data: { info: game.info },
+    };
+
+    this.server.to(roomId).emit(WsEventPath.GAME_STATUS, gameStatusMsg);
+    await this.server.in(roomId).socketsLeave(roomId);
   }
 
   handleConnection(socket: Socket) {

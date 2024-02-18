@@ -4,7 +4,9 @@ export const GAMES_MOVES_MODEL_NAME = 'games-moves';
 
 // Queues Names
 export const JOIN_GAMES_QUEUE_NAME = 'join-games';
+export const NEW_MOVES_QUEUE_NAME = 'new-moves';
 
+// Tokens
 export const REDIS_CLIENT_TOKEN = 'RedisClientToken';
 
 export const NodeEnvironment = {
@@ -17,4 +19,8 @@ export const NodeEnvironment = {
 export const WsEventPath = {
   JOIN: 'join',
   INFO_JOIN: 'info-join',
+  NEW_MOVE: 'new-move',
+  GAME_STATUS: 'game-status',
 } as const;
+
+export const DIVIDE_BY = 3;

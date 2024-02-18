@@ -10,7 +10,7 @@
 
 - (Nemanja) The game can be played automatically with a user. (A real player playing with the machine) and optionally 2 real players playing together.
 
-- (ME) There is no need for unit tests. e2e testing is sufficient
+- E2E testing is sufficient (no need for unit testing)
 
 --- 
 

@@ -24,6 +24,10 @@ export class InMemoryRepository implements OnApplicationShutdown {
     await this.redisClient.del(key);
   }
 
+  async deleteMany(keys: string[]): Promise<void> {
+    await this.redisClient.del(keys);
+  }
+
   async deleteByPattern(pattern: string) {
     const keys = await this.redisClient.keys(`${pattern}:*`);
     if (keys.length) {
