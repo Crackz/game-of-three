@@ -171,6 +171,7 @@ export class GamesMovesService implements OnApplicationBootstrap {
         action: gameMove.action,
         number: gameMove.number,
         role: gameMove.role,
+        isBot: gameMove.isBot,
         createdAt: gameMove.createdAt,
       }),
     );

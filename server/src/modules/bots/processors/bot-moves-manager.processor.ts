@@ -2,10 +2,10 @@ import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { BOT_MOVES_MANAGER_QUEUE_NAME } from 'src/common/constants';
-import { GamesService } from 'src/modules/games/games.service';
-import { BotNewMoveJobMessage } from '../interfaces/bot-moves-manager.interface';
 import { GamesMovesService } from 'src/modules/games-moves/games-moves.service';
 import { GamesMovesGateway } from 'src/modules/games-moves/gateways/games-moves.gateway';
+import { GamesService } from 'src/modules/games/games.service';
+import { BotNewMoveJobMessage } from '../interfaces/bot-moves-manager.interface';
 
 @Processor(BOT_MOVES_MANAGER_QUEUE_NAME)
 export class BotMovesManagerProcessor extends WorkerHost {
@@ -24,6 +24,12 @@ export class BotMovesManagerProcessor extends WorkerHost {
     const isGameFull = await this.gamesService.isGameFull(gameId);
     if (isGameFull) {
       // Bot move is ignored when the game has all players
+      return;
+    }
+
+    const isGameEmpty = await this.gamesService.isGameEmpty(gameId);
+    if (isGameEmpty) {
+      // Bot move is ignored when the game don't have any player
       return;
     }
 

@@ -106,6 +106,15 @@ export class GamesService implements OnApplicationBootstrap {
     return playerOneIsInGame && playerTwoIsInGame;
   }
 
+  async isGameEmpty(gameId: number): Promise<boolean> {
+    const [playerOneIsInGame, playerTwoIsInGame] = await Promise.all([
+      this.isRoleInGame(gameId, GameRole.PLAYER_ONE),
+      this.isRoleInGame(gameId, GameRole.PLAYER_TWO),
+    ]);
+
+    return !playerOneIsInGame && !playerTwoIsInGame;
+  }
+
   async getAvailableRoles(gameId: number): Promise<GameRole[]> {
     const [playerOneIsInGame, playerTwoIsInGame] = await Promise.all([
       this.isRoleInGame(gameId, GameRole.PLAYER_ONE),

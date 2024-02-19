@@ -6,5 +6,6 @@ export class GameMoveDto {
   number: number;
   action: GameMoveAction;
   role: GameRole;
+  isBot: boolean;
   createdAt: Date;
 }
