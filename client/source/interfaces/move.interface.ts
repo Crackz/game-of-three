@@ -11,6 +11,7 @@ export interface GameMove {
 	action: GameMoveAction;
 	number: number;
 	role: GameRole;
+	isBot: boolean;
 	createdAt: string;
 }
 
@@ -22,6 +23,7 @@ export interface NewMoveEventMsg {
 			action: GameMoveAction;
 			number: number;
 			role: GameRole;
+			isBot: boolean;
 		};
 	};
 }

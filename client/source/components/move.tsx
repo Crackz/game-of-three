@@ -28,14 +28,21 @@ export const Move = ({
 	shouldIgnoreAction?: boolean;
 	width: string;
 }) => {
+	const renderAction = () => {
+		if (shouldIgnoreAction || !move) {
+			return;
+		}
+
+		return <Text color="yellow">{` (${mapActionToName(move.action)})`}</Text>;
+	};
+
 	return (
 		<Box width={width}>
 			<Text bold color={getPlayerColor(role)}>
 				{move?.number || '☐'}
 			</Text>
-			{!shouldIgnoreAction && move && (
-				<Text color="yellow">{` (${mapActionToName(move.action)})`}</Text>
-			)}
+			{renderAction()}
+			{move?.isBot ? <Text color="gray"> [Bot]</Text> : ''}
 		</Box>
 	);
 };
