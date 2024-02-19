@@ -7,7 +7,6 @@ export class CreateGamesTable1707747966979 implements MigrationInterface {
     const createGameStatusQuery = `
     CREATE TYPE "${this.gameStatusEnumName}" AS ENUM (
       'ACTIVE',
-      'DRAW',
       'FINISHED'
     );
     `;
