@@ -12,11 +12,12 @@ import { WsEventPath } from 'src/common/constants';
 import { BaseGateway } from 'src/common/gateways/base.gateway';
 import { GamesService } from '../games.service';
 import {
+  GameEventWebSocketMessage,
   GameRole,
   GameStatusWebSocketMessage,
-  GameEventWebSocketMessage,
   JoinGameWebSocketMessage,
 } from '../interfaces/games.interface';
+import { BotsService } from 'src/modules/bots/bots.service';
 
 @WebSocketGateway({ namespace: 'games', cors: true })
 export class GamesGateway
@@ -26,7 +27,10 @@ export class GamesGateway
     OnGatewayDisconnect<Socket>,
     OnApplicationShutdown
 {
-  constructor(private readonly gamesService: GamesService) {
+  constructor(
+    private readonly gamesService: GamesService,
+    private readonly botsService: BotsService,
+  ) {
     super(GamesGateway.name);
   }
 
@@ -117,6 +121,8 @@ export class GamesGateway
       },
     };
     socket.emit(WsEventPath.JOIN, joinedMessage);
+
+    await this.botsService.tryToMakeBotNewMove(game.id);
   }
 
   @AsyncApiPub({
@@ -162,6 +168,8 @@ export class GamesGateway
         'LEAVE',
       );
       this.sendGameEventEvent(leftGame.id, infoMessage);
+
+      await this.botsService.tryToMakeBotNewMove(leftGame.id);
     }
 
     this.logger.verbose(`Socket Disconnected: ${socket.id}`);

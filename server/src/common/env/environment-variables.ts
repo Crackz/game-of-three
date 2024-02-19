@@ -58,5 +58,5 @@ export class EnvironmentVariables {
 
   @IsDefined()
   @IsNumber()
-  GAME_MOVE_WAIT_TIME_IN_MS: number;
+  BOT_MOVE_WAIT_TIME_IN_MS: number;
 }

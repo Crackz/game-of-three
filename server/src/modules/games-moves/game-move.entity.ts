@@ -25,6 +25,11 @@ export class GameMoveEntity extends BaseEntity {
   })
   role: GameRole;
 
+  @Column({
+    default: false,
+  })
+  isBot: boolean;
+
   @Column()
   gameId: number;
 

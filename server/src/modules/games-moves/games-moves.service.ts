@@ -12,6 +12,7 @@ import {
 } from './interfaces/games-moves.interface';
 import { NewMoveJobMessage } from './interfaces/new-moves.interface';
 import { GameMoveDto } from './dtos/game-move.dto';
+import { GamesService } from '../games/games.service';
 
 @Injectable()
 export class GamesMovesService implements OnApplicationBootstrap {
@@ -19,6 +20,7 @@ export class GamesMovesService implements OnApplicationBootstrap {
 
   constructor(
     private readonly gamesMovesRepo: GamesMovesRepository,
+    private readonly gamesService: GamesService,
     private readonly inMemoryRepo: InMemoryRepository,
     @InjectQueue(NEW_MOVES_QUEUE_NAME) private newMovesQueue: Queue,
   ) {}
@@ -81,6 +83,7 @@ export class GamesMovesService implements OnApplicationBootstrap {
         number: lastMove.number,
         role: lastMove.role,
         action: lastMove.action,
+        isBot: lastMove.isBot,
       };
     }
 
@@ -116,6 +119,38 @@ export class GamesMovesService implements OnApplicationBootstrap {
     return newNumber / DIVIDE_BY;
   }
 
+  getValidNewMoveAction(currNumber: number): {
+    action: GameMoveAction;
+    newNumber: number;
+  } {
+    const newNumberWithoutAction = currNumber;
+    const newNumberWithAddedOne = currNumber + 1;
+    const newNumberWithSubtractedOne = currNumber - 1;
+
+    if (newNumberWithoutAction % DIVIDE_BY === 0) {
+      return {
+        action: GameMoveAction.NO_ACTION,
+        newNumber: newNumberWithoutAction / DIVIDE_BY,
+      };
+    }
+
+    if (newNumberWithAddedOne % DIVIDE_BY === 0) {
+      return {
+        action: GameMoveAction.ADDED_ONE,
+        newNumber: newNumberWithAddedOne / DIVIDE_BY,
+      };
+    }
+
+    if (newNumberWithSubtractedOne % DIVIDE_BY === 0) {
+      return {
+        action: GameMoveAction.SUBTRACTED_ONE,
+        newNumber: newNumberWithSubtractedOne / DIVIDE_BY,
+      };
+    }
+
+    throw new Error("Couldn't find a valid move for the bot");
+  }
+
   isWinMove(move: GameMoveEntity) {
     return move.number === 1;
   }
@@ -139,5 +174,12 @@ export class GamesMovesService implements OnApplicationBootstrap {
         createdAt: gameMove.createdAt,
       }),
     );
+  }
+
+  async handleWinMove(move: GameMoveEntity) {
+    await Promise.all([
+      this.removeGameMoves(move.gameId),
+      this.gamesService.markAsFinishedGame(move.gameId, move.role),
+    ]);
   }
 }

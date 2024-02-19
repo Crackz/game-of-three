@@ -11,11 +11,11 @@ import { WsEventPath } from 'src/common/constants';
 import { WsExceptionsFilter } from 'src/common/filters/ws-exceptions.filter';
 import { BaseGateway } from 'src/common/gateways/base.gateway';
 import { DefaultValidationPipe } from 'src/common/pipes/default-validation.pipe';
+import { GamesGateway } from 'src/modules/games/gateways/games.gateway';
 import { MakeNewMoveDto } from '../dtos/make-new-move.dto';
 import { GameMoveEntity } from '../game-move.entity';
 import { GamesMovesService } from '../games-moves.service';
 import { NewMoveWebSocketMessage } from '../interfaces/games-moves.interface';
-import { GamesGateway } from 'src/modules/games/gateways/games.gateway';
 
 @WebSocketGateway({ namespace: 'games', cors: true })
 export class GamesMovesGateway extends BaseGateway {
@@ -66,6 +66,7 @@ export class GamesMovesGateway extends BaseGateway {
           action: newMove.action,
           number: newMove.number,
           role: newMove.role,
+          isBot: newMove.isBot,
         },
       },
     };

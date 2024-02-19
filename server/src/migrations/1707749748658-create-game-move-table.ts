@@ -34,6 +34,7 @@ export class CreateGameMoveTable1707749748658 implements MigrationInterface {
       "action" ${this.gameMoveActionEnumName} NOT NULL,
       "role" ${this.gameMoveRoleEnumName} NOT NULL,
       "gameId" INT NOT NULL REFERENCES ${this.gamesTableName} (id),
+      "isBot" BOOLEAN NOT NULL DEFAULT FALSE,
       "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       "updatedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );

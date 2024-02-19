@@ -11,7 +11,7 @@ import {
   LastGameMoveDetails,
 } from '../interfaces/games-moves.interface';
 import { NewMoveJobMessage } from '../interfaces/new-moves.interface';
-import { GameMoveEntity } from '../game-move.entity';
+import { BotsService } from 'src/modules/bots/bots.service';
 
 @Processor(NEW_MOVES_QUEUE_NAME)
 export class NewMovesProcessor extends WorkerHost {
@@ -20,6 +20,7 @@ export class NewMovesProcessor extends WorkerHost {
   constructor(
     private readonly gamesMovesGateway: GamesMovesGateway,
     private readonly gamesMovesService: GamesMovesService,
+    private readonly botsService: BotsService,
     private readonly gamesService: GamesService,
   ) {
     super();
@@ -84,15 +85,8 @@ export class NewMovesProcessor extends WorkerHost {
       action,
       number: newNumber,
       role: playerDetails.role,
+      isBot: false,
     });
-  }
-
-  async handleWinMove(move: GameMoveEntity) {
-    await Promise.all([
-      this.gamesMovesService.removeGameMoves(move.gameId),
-      this.gamesService.markAsFinishedGame(move.gameId, move.role),
-    ]);
-    await this.gamesMovesGateway.sendWinMoveEvent(move);
   }
 
   async process(job: Job<NewMoveJobMessage>): Promise<any> {
@@ -103,8 +97,11 @@ export class NewMovesProcessor extends WorkerHost {
       this.gamesMovesGateway.sendSuccessfulNewMoveEvent(newMove);
 
       if (this.gamesMovesService.isWinMove(newMove)) {
-        await this.handleWinMove(newMove);
+        await this.gamesMovesService.handleWinMove(newMove);
+        await this.gamesMovesGateway.sendWinMoveEvent(newMove);
       }
+
+      await this.botsService.tryToMakeBotNewMove(newMove.gameId);
     } catch (err) {
       this.gamesMovesGateway.sendFailedNewMoveEvent(userId, err.message);
     }

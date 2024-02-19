@@ -17,6 +17,7 @@ export class NewMoveWebSocketMessage extends WebSocketMessage {
             action: GameMoveAction.ADDED_ONE,
             number: 100,
             role: GameRole.PLAYER_ONE,
+            isBot: false,
           },
         },
       },
@@ -33,6 +34,7 @@ export class NewMoveWebSocketMessage extends WebSocketMessage {
       number: number;
       role: GameRole;
       action: GameMoveAction;
+      isBot: boolean;
     };
   };
 }
@@ -41,4 +43,5 @@ export interface LastGameMoveDetails {
   role: GameRole;
   number: number;
   action: GameMoveAction;
+  isBot: boolean;
 }

@@ -5,6 +5,7 @@ export const GAMES_MOVES_MODEL_NAME = 'games-moves';
 // Queues Names
 export const JOIN_GAMES_QUEUE_NAME = 'join-games';
 export const NEW_MOVES_QUEUE_NAME = 'new-moves';
+export const BOT_MOVES_MANAGER_QUEUE_NAME = 'bot-moves-manager';
 
 // Tokens
 export const REDIS_CLIENT_TOKEN = 'RedisClientToken';
