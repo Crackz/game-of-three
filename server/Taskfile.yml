@@ -5,28 +5,31 @@ tasks:
     cmds:
       - npm install
       - sh ./scripts/hosts.sh add 127.0.0.1 gameofthree-postgres
+      - sh ./scripts/hosts.sh add 127.0.0.1 gameofthree-redis
+      - sh ./scripts/hosts.sh add 127.0.0.1 test-gameofthree-postgres
+      - sh ./scripts/hosts.sh add 127.0.0.1 test-gameofthree-redis
     internal: true
 
   log:
-    cmd: docker compose logs -f app
+    cmd: docker compose  -f docker-compose.dev.yml logs -f app
 
   start:
     cmds:
-      - docker compose up -d
+      - docker compose -f docker-compose.dev.yml up -d --build
       - task: log
 
   stop:
     cmds:
-      - docker compose stop
+      - docker compose -f docker-compose.dev.yml stop
 
   restart:
     cmds:
-      - docker compose restart
+      - docker compose -f docker-compose.dev.yml restart
       - task: log
 
   down:
     cmds:
-      - docker compose down
+      - docker compose -f docker-compose.dev.yml down
 
   migration:create:
     cmds:
@@ -43,3 +46,20 @@ tasks:
       NODE_ENV: development
     cmds:
       - ./node_modules/.bin/typeorm-ts-node-commonjs migration:revert  -d ./src/config/typeorm.ts
+
+  resource:gen:
+    interactive: true
+    cmds:
+      - ./node_modules/.bin/nest generate resource
+
+  test:init:
+    cmds:
+      - docker compose -f docker-compose.testing.yml down
+      - docker compose -f docker-compose.testing.yml up -d
+
+  test:start:
+    interactive: true
+    env:
+      NODE_ENV: testing
+    cmds:
+      - npm run test:watch:e2e

@@ -1,9 +1,28 @@
 // Models Names
 export const GAMES_MODEL_NAME = 'games';
+export const GAMES_MOVES_MODEL_NAME = 'games-moves';
 
-export enum NodeEnvironment {
-  DEVELOPMENT = 'development',
-  STAGING = 'staging',
-  PRODUCTION = 'production',
-  TESTING = 'testing',
-}
+// Queues Names
+export const JOIN_GAMES_QUEUE_NAME = 'join-games';
+export const NEW_MOVES_QUEUE_NAME = 'new-moves';
+export const BOT_MOVES_MANAGER_QUEUE_NAME = 'bot-moves-manager';
+
+// Tokens
+export const REDIS_CLIENT_TOKEN = 'RedisClientToken';
+
+export const NodeEnvironment = {
+  DEVELOPMENT: 'development',
+  STAGING: 'staging',
+  PRODUCTION: 'production',
+  TESTING: 'testing',
+} as const;
+
+export const WsEventPath = {
+  ERROR: 'error',
+  JOIN: 'join',
+  EVENTS: 'events',
+  NEW_MOVE: 'new-move',
+  GAME_STATUS: 'game-status',
+} as const;
+
+export const DIVIDE_BY = 3;
