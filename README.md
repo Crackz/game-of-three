@@ -14,7 +14,36 @@
 
 - (Nemanja) The game can be played automatically with a user. (A real player playing with the machine) and optionally 2 real players playing together.
 
-- E2E testing is sufficient (no need for unit testing)
+- E2E testing is sufficient (no need for unit testing).
+
+- If a player didn't join the game within a specified period of time (configurable) a bot will take the player place.
+
+- If a player goes offline for period of time (configurable). a bot will take his place.
+
+- If the game doesn't have any players. the bot won't make any move.
+
+----
+
+#### Architecture
+##### System Design
+<a href="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/SystemDesign.png">
+<img src="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/SystemDesign.png" width="400" />
+</a>
+
+
+##### Database
+<a href="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/DbSchemas.png">
+<img src="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/DbSchemas.png" width="400" />
+</a>
+
+---
+
+#### Gameplay
+<a href="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/gameplay.gif
+">
+<img src="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/gameplay.gif
+" width="400" />
+</a>
 
 --- 
 
@@ -65,3 +94,14 @@
 
 ##### Revert the latest migration
 - `task server:migration:revert`
+
+---
+
+#### Miscellaneous
+##### Abbreviations
+> You can replace `server` with `s` on any commands and the same goes for `client`
+
+##### Missing Implementation
+> Didn't cover `bots module` e2e tests due to lack of available time. I think the current e2e tests implementation is good enough to judge my skill of writing tests
+
+
