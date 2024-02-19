@@ -1,18 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { BotNewMoveJobMessage } from './interfaces/bot-moves-manager.interface';
-import { BOT_MOVES_MANAGER_QUEUE_NAME } from 'src/common/constants';
 import { InjectQueue } from '@nestjs/bullmq';
+import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { Queue } from 'bullmq';
-import { ConfigService } from '@nestjs/config';
-import { EnvironmentVariables } from 'src/common/env/environment-variables';
+import { BOT_MOVES_MANAGER_QUEUE_NAME } from 'src/common/constants';
+import { BotNewMoveJobMessage } from './interfaces/bot-moves-manager.interface';
 
 @Injectable()
-export class BotsService {
+export class BotsService implements OnApplicationBootstrap {
   constructor(
     @InjectQueue(BOT_MOVES_MANAGER_QUEUE_NAME)
     private readonly botMovesManagerQueue: Queue,
-    private readonly configService: ConfigService<EnvironmentVariables>,
   ) {}
+
+  async onApplicationBootstrap() {
+    /**
+     * Remove any old bot moves job that could happen when the server crashes
+     */
+    const jobs = await this.botMovesManagerQueue.getJobs();
+    await Promise.all(jobs.map((job) => job.remove()));
+  }
+
   async tryToMakeBotNewMove(gameId: number) {
     const botNewMoveJobMessage: BotNewMoveJobMessage = {
       gameId,
