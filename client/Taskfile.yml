@@ -1,0 +1,14 @@
+version: "3"
+
+tasks:
+  init:
+    internal: true
+    cmds:
+      - npm install
+  watch:
+    cmds:
+      - npm run dev
+  start:
+    cmds:
+      - npm run build
+      - node dist/cli.js

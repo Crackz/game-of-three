@@ -1,8 +1,12 @@
 #### Used Technologies
 <p>
   <img src="https://nestjs.com/img/logo-small.svg" width="50" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Socket-io.svg" width="50" />
   <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" width="50" />
   <img src="https://cdn.worldvectorlogo.com/logos/redis.svg" width="50" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" width="50" />
+  <img src="https://raw.githubusercontent.com/vadimdemedes/ink/master/media/logo.png" width="50" />
+
 </p>
 
 
@@ -27,6 +31,11 @@
 ##### Run the server
 - `task server:start`
 
+##### Run the client
+> It will build then run the client
+- `task client:start`
+> To watch the client changes
+- `task client:watch`
 --- 
 
 #### Docs
