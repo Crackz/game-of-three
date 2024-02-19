@@ -39,11 +39,7 @@
 ---
 
 #### Gameplay
-<a href="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/gameplay.gif
-">
-<img src="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/gameplay.gif
-" width="400" />
-</a>
+![View It Here](https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/gameplay.gif)
 
 --- 
 
