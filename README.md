@@ -51,8 +51,9 @@ There is no advantage of using SQL over NOSQL for our simple use case but since 
 ###### How would you scale our Ws Server?
 Another advantage of using redis its pub/sub model that can be used by socket.io to scale the Ws Server just by installing and using a single package.
 
+---
 
-##### User Flows
+#### User Flows
 
 - Join a game: 
   > The user opens the client(terminal), then a request will be sent to the ws server to connect, if the socket is connected successfully. The client will fire `join` event, the server will handle this event by creating or getting an active game then It will add a message with a game id to the message broker(redis) so later a processor will get that message and try to make the socket connect to that game and whether it was successful or not the server will fire a `join` event with some details.
