@@ -1,5 +1,17 @@
 
-#### Game
+#### Used Technologies
+<p>
+  <img src="https://nestjs.com/img/logo-small.svg" width="50" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Socket-io.svg" width="50" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" width="50" />
+  <img src="https://cdn.worldvectorlogo.com/logos/redis.svg" width="50" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" width="50" />
+  <img src="https://raw.githubusercontent.com/vadimdemedes/ink/master/media/logo.png" width="50" />
+</p>
+
+---
+
+#### Game Description
 
 When a player starts, it incepts a random (whole) number and sends it to the second
 player as an approach to starting the game. The receiving player can now always choose between adding one of {-1, 0, 1} to get to a number that is divisible by specified number. Divide it by the specified number. The resulting whole number is then sent back to the original sender. The same rules are applied until one player reaches the number 1 (after the division). See the example below.
@@ -16,17 +28,10 @@ player as an approach to starting the game. The receiving player can now always 
 
 - If the game doesn't have any players. the bot won't make any move.
 
-----
+---
 
-#### Used Technologies
-<p>
-  <img src="https://nestjs.com/img/logo-small.svg" width="50" />
-  <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Socket-io.svg" width="50" />
-  <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" width="50" />
-  <img src="https://cdn.worldvectorlogo.com/logos/redis.svg" width="50" />
-  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" width="50" />
-  <img src="https://raw.githubusercontent.com/vadimdemedes/ink/master/media/logo.png" width="50" />
-</p>
+#### Gameplay
+![View It Here](https://raw.githubusercontent.com/Crackz/game-of-three/main/diagrams/gameplay.gif)
 
 ---
 
@@ -73,10 +78,6 @@ Another advantage of using redis its pub/sub model that can be used by socket.io
 - Game Events:
   > The server sends an `events` event to the players whenever someone joins or leaves the game.
 
----
-
-#### Gameplay
-![View It Here](https://raw.githubusercontent.com/Crackz/game-of-three/main/diagrams/gameplay.gif)
 
 --- 
 
