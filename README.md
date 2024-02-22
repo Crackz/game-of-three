@@ -1,20 +1,14 @@
-#### Used Technologies
-<p>
-  <img src="https://nestjs.com/img/logo-small.svg" width="50" />
-  <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Socket-io.svg" width="50" />
-  <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" width="50" />
-  <img src="https://cdn.worldvectorlogo.com/logos/redis.svg" width="50" />
-  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" width="50" />
-  <img src="https://raw.githubusercontent.com/vadimdemedes/ink/master/media/logo.png" width="50" />
 
-</p>
+#### Game
 
+When a player starts, it incepts a random (whole) number and sends it to the second
+player as an approach to starting the game. The receiving player can now always choose between adding one of {-1, 0, 1} to get to a number that is divisible by specified number. Divide it by the specified number. The resulting whole number is then sent back to the original sender. The same rules are applied until one player reaches the number 1 (after the division). See the example below.
 
-#### Assumptions
+<a href="https://raw.githubusercontent.com/Crackz/game-of-three/main/diagrams/example.png">
+<img src="https://raw.githubusercontent.com/Crackz/game-of-three/main/diagrams/example.png" width="400" />
+</a>
 
-- (Nemanja) The game can be played automatically with a user. (A real player playing with the machine) and optionally 2 real players playing together.
-
-- E2E testing is sufficient (no need for unit testing).
+- The game can be played automatically with a user. (A real player playing with the machine) and optionally 2 real players playing together.
 
 - If a player didn't join the game within a specified period of time (configurable) a bot will take the player place.
 
@@ -24,16 +18,28 @@
 
 ----
 
+#### Used Technologies
+<p>
+  <img src="https://nestjs.com/img/logo-small.svg" width="50" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Socket-io.svg" width="50" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/2/29/Postgresql_elephant.svg" width="50" />
+  <img src="https://cdn.worldvectorlogo.com/logos/redis.svg" width="50" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" width="50" />
+  <img src="https://raw.githubusercontent.com/vadimdemedes/ink/master/media/logo.png" width="50" />
+</p>
+
+---
+
 #### Architecture
 ##### System Design
-<a href="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/SystemDesign.png">
-<img src="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/SystemDesign.png" width="400" />
+<a href="https://raw.githubusercontent.com/Crackz/game-of-three/main/diagrams/SystemDesign.png">
+<img src="https://raw.githubusercontent.com/Crackz/game-of-three/main/diagrams/SystemDesign.png" width="400" />
 </a>
 
 
 ##### Database Schemas
-<a href="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/DbSchemas.png">
-<img src="https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/DbSchemas.png" width="400" />
+<a href="https://raw.githubusercontent.com/Crackz/game-of-three/main/diagrams/DbSchemas.png">
+<img src="https://raw.githubusercontent.com/Crackz/game-of-three/main/diagrams/DbSchemas.png" width="400" />
 </a>
 
 ###### Why used message queues?
@@ -70,7 +76,7 @@ Another advantage of using redis its pub/sub model that can be used by socket.io
 ---
 
 #### Gameplay
-![View It Here](https://raw.githubusercontent.com/Crackz/takeaway-challenge/main/diagrams/gameplay.gif)
+![View It Here](https://raw.githubusercontent.com/Crackz/game-of-three/main/diagrams/gameplay.gif)
 
 --- 
 
